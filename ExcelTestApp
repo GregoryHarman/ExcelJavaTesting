@@ -1,0 +1,132 @@
+package Excel;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.swing.JLabel;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class ExcelTestApp {
+
+	static int rowStart = 0;
+	static int maxColumns = 7;
+	static int lastFormulaRow = 1; //last row plus 1
+
+	//make a new workbook
+	static XSSFWorkbook workbook = new XSSFWorkbook();
+
+	//make a new sheet
+	static XSSFSheet sheet = workbook.createSheet("Gregs list");
+
+	//make a Map object
+	static Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
+
+
+
+	public void writeList(String name, int age, String address, String phoneNum, boolean contactable, int traningTime){
+
+		//write in list
+
+		if(lastFormulaRow == 1){	//if its the first entry set up headers
+
+			data.put(++rowStart, new Object[] {"NAME", "AGE", "ADDRESS", "PHONE NUMBER", "CONTACTABLE",
+					"TRANING TIME", "AGE WHEN FINISHED TRAINING"});
+
+		}
+
+		data.put(++rowStart, new Object[] {name, age, address, phoneNum, contactable, traningTime, 0});
+
+		++lastFormulaRow;	//increases the last row count so formula can be entered in each row
+		
+		//System.out.println(sheet.getLastRowNum());
+		
+
+	}
+
+	public void saveFile() {
+
+		//Iterate over data and write to sheet
+		Set<Integer> keyset = data.keySet();
+		int rownum = 0;
+		for (Integer key : keyset){
+
+			Row row = sheet.createRow(rownum++);
+			Object [] objArr = data.get(key);
+			int cellnum = 0;
+
+			for (Object obj : objArr){
+
+				Cell cell = row.createCell(cellnum++);
+				if(obj instanceof String){
+
+					cell.setCellValue((String)obj);
+
+				}else if(obj instanceof Integer){
+
+					cell.setCellValue((Integer)obj);
+
+				}else if(obj instanceof Boolean){
+
+					cell.setCellValue((Boolean)obj);
+
+				}
+			}
+
+		}
+
+
+
+		//set formula in cells
+
+		String formula = null;
+
+		for(int i = 1; i < lastFormulaRow; i++){ //formula cells start in row 1 and move down
+
+
+			//set cell type
+			sheet.getRow(i).getCell(6).setCellType(Cell.CELL_TYPE_FORMULA);
+
+			//change formula
+			formula = "SUM(B" + (i + 1) + ",F" + ( i + 1 ) + ")";
+
+			//set formula
+			sheet.getRow(i).getCell(6).setCellFormula(formula);
+
+		}
+
+		//adjust column size to fit contents
+		for(int i = 0; i < maxColumns; i++){
+
+			sheet.autoSizeColumn(i);
+			
+
+		}
+
+		try
+		{
+			//Write the workbook in file system
+			FileOutputStream out = new FileOutputStream(new File("excelApp_demo.xlsx"));
+			workbook.write(out);
+			out.close();
+			System.out.println("excelApp_demo.xlsx written successfully on disk.");
+			
+			//System.out.println(sheet.getLastRowNum());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+
+}
+
+
