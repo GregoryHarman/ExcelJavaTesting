@@ -1,0 +1,163 @@
+package Excel;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+
+public class ExcelTestGUI extends JFrame {
+	
+	String name = null;
+	int age = 0;
+	String address = null;
+	String phoneNum = null;
+	boolean contactable = false;
+	int traningTime = 0;
+	
+	
+	
+	//create a object with reference to ExcelTestApp to call methods
+	ExcelTestApp app = new ExcelTestApp();
+	
+		private JPanel contentPane;
+	private JTextField textFieldName;
+	private JTextField textFieldAge;
+	private JTextField textFieldAddress;
+	private JTextField textFieldPhoneNumber;
+	private JTextField textFieldTrainingTime;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ExcelTestGUI frame = new ExcelTestGUI();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public ExcelTestGUI() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 320, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		textFieldName = new JTextField();
+		textFieldName.setBounds(10, 33, 86, 20);
+		contentPane.add(textFieldName);
+		textFieldName.setColumns(10);
+		
+		textFieldAge = new JTextField();
+		textFieldAge.setBounds(106, 33, 86, 20);
+		contentPane.add(textFieldAge);
+		textFieldAge.setColumns(10);
+		
+		textFieldAddress = new JTextField();
+		textFieldAddress.setBounds(202, 33, 86, 20);
+		contentPane.add(textFieldAddress);
+		textFieldAddress.setColumns(10);
+		
+		textFieldPhoneNumber = new JTextField();
+		textFieldPhoneNumber.setBounds(10, 100, 86, 20);
+		contentPane.add(textFieldPhoneNumber);
+		textFieldPhoneNumber.setColumns(10);
+		
+		textFieldTrainingTime = new JTextField();
+		textFieldTrainingTime.setBounds(106, 100, 86, 20);
+		contentPane.add(textFieldTrainingTime);
+		textFieldTrainingTime.setColumns(10);
+		
+		final JCheckBox chckbxContactable = new JCheckBox("Contactable");
+		chckbxContactable.setBounds(195, 99, 97, 23);
+		contentPane.add(chckbxContactable);
+		
+		final JLabel lblFileSaved = new JLabel("");
+		lblFileSaved.setBounds(106, 203, 86, 14);
+		contentPane.add(lblFileSaved);
+		
+		JButton btnSaveEntry = new JButton("Save Entry");
+		btnSaveEntry.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				//get text field inputs
+				name = textFieldName.getText();
+				age = Integer.parseInt(textFieldAge.getText());
+				address = textFieldAddress.getText();
+				phoneNum = textFieldPhoneNumber.getText();
+				contactable = chckbxContactable.isSelected();
+				traningTime = Integer.parseInt(textFieldTrainingTime.getText());;
+				
+				//save entry's
+				app.writeList(name, age, address, phoneNum, contactable, traningTime);
+				
+				//clear text fields
+				textFieldName.setText("");
+				textFieldAge.setText("");
+				textFieldAddress.setText("");
+				textFieldPhoneNumber.setText("");
+				textFieldTrainingTime.setText("");
+				//unselect check box
+				chckbxContactable.setSelected(false);
+				
+			}
+		});
+		btnSaveEntry.setBounds(87, 131, 124, 23);
+		contentPane.add(btnSaveEntry);
+		
+		JButton btnSaveFile = new JButton("Save File");
+		btnSaveFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//save and format excel file
+				app.saveFile();
+				
+				lblFileSaved.setText("File saved");
+				
+			}
+		});
+		btnSaveFile.setBounds(87, 228, 124, 23);
+		contentPane.add(btnSaveFile);
+		
+		JLabel lblName = new JLabel("Name");
+		lblName.setBounds(10, 11, 86, 14);
+		contentPane.add(lblName);
+		
+		JLabel lblAge = new JLabel("Age");
+		lblAge.setBounds(106, 11, 86, 14);
+		contentPane.add(lblAge);
+		
+		JLabel lblAddress = new JLabel("Address");
+		lblAddress.setBounds(202, 11, 86, 14);
+		contentPane.add(lblAddress);
+		
+		JLabel lblPhoneNumber = new JLabel("Phone Number");
+		lblPhoneNumber.setBounds(7, 75, 89, 14);
+		contentPane.add(lblPhoneNumber);
+		
+		JLabel lblTrainingTime = new JLabel("Training Time");
+		lblTrainingTime.setBounds(106, 75, 86, 14);
+		contentPane.add(lblTrainingTime);
+		
+		
+		
+		
+	}
+}
